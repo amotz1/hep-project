@@ -1,0 +1,9 @@
+function EEG = convert2_64_electrodes(EEG)
+chanlocs = EEG.chanlocs(1:64);
+setname = EEG.setname;
+tempEEG = EEG;
+tempEEG.data = EEG.data(1:64,:);
+tempEEG.nbchan = 64;
+tempEEG.chanlocs = chanlocs; 
+tempEEG.setname = setname;
+EEG = tempEEG;

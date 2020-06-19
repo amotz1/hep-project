@@ -1,0 +1,287 @@
+1.5 2020 friday 
+
+today i tried to understand how to put event markers in fieldtrip databrowser. i found that preprocessing the
+bdf file with fieldtrip and not converting the eeglab data structure with eeglab2fieldtrip_lior as i did 
+until now produce a data-structure with extra status channel 
+and label that specify the event markers and sampleinfo and header fields and many fields in cfg except of 
+version. the data-structure though is without electrode positions probably because eeglab 
+produce automatic electrode positions and fieldtrip is not.
+
+i didn't solve yet the problem of showing event markers with ft_databrowser i just know i have channel containing
+them. i tried specifying in the cfg cfg.plotevent = 'yes' but this didn't produce vertical lines like i 
+wanted
+
+2/5/2020 
+
+2/5/2020 suterday 
+
+latencies of events after using ft_databrowser hbd_43
+
+30 35.4 (35.4 diff) 40 48.2 (12.8 diff) 
+50 59.25 (diff 11.05) 80 92.25 diff(33) 30 172.25 diff(80) 40 177.5 diff(5.25) 50 181.2 diff(3.7) 
+58 211.2 43 214.25 55 249.26 62 259.94 58 263 90 296.1 94 386.05 62 389.72 58 393.45 58 423.45 47 426.48 
+30 471.5 40 477.2 50 480.2 58 510.2 27 513.4 30 538.4 40 545.2 50 547.8   
+
+the first number represent the status and then
+after the first the other numbers represent
+how much time the status appeared first and then again and again until the end 
+(from start appearence to end)
+-------------------------------------
+30 35.4 136.85 299.25 66.9
+40 48.2 129.3 299.7 68
+50 59.25 121.95 299 67.6
+80 92.25 
+58 211.2  51.8 130.45 30 86.75
+43 214.25
+55 249.26
+62 259.94 129.78
+90 296.1 
+94 386.05
+47 426.48
+27 513.4
+-------------------------------------------
+there is a problem that loading the data from eeglab and transfering it to fieldtrip with our function 
+ignore events, so when i plot the data the ft_databrowser ignore events
+a solution can be to see the events useing the function eegplot from eeglab 
+or processing the original bdf file with fieldtrip (including filter and reref) and then i have a status channel
+so i can see the events with ft_databrowser. 
+
+
+summary of the day
+
+succeeded in finding a way to view events in ft_databrowser. just processing the data with fieldtrip first 
+and put cfg.continous = 'yes' and cfg.viewmode = 'vertical' in the options of ft_databrowser. or using function
+of eeglab eegplot(EEG,1,1,1). 
+
+problems
+
+1) a problem that still remains is that using eeglab2fieldtrip_lior excludes events from the data structure
+tried to use eeglab function eeglab2fieldtrip(EEG,'raw','dipfit') but it throughs an error about a data structure
+name dat.Fs and it says no field name Fs. when i checked, dat is eeglab data structure so because of that
+it doesnt have many fields that they want there. 
+
+2)  i am still unsure about the identities  of the events and those still need to be checked. 
+i checked the events in hbd43 and found 11 events with times between events that are not corresponding
+to 25 35 and 45.
+
+15/5/2020 friday 
+
+i learnt on fir filter and tried to understand how it works in the software. first we need to get filter
+coefients. in the software this is done with the firws function. i am still unsure how it is done, what is
+the input and output of this function? it involves the z transform. after we get the filter coefients 
+the filter function use another mvfilter function that calculates the new signal using past response according to fir bod plot and its
+difference eqution. getting the filter coefients of my function might help me to use them to calculate 
+the results of my simulated data maybe.
+
+problem- i want to use sinc fir filter on a simulated erp
+i first need to find filter coeffients using the firws function, the input for this function are filter order
+filter cutoffs and window type. the output will give me the sinc filter coeffientss. 
+then i need to use the filter function with the filter coeffients 1 and my input to get the reconstruced signal
+
+16/5/2020 suterday 
+ 
+today i learnt theory of filters and practice problems. i learnt on how to find impulse response from
+difference equations, that we need to find first the transfer function, doing a z transform on the difference
+equation and then if we want the frequency response its the transfer function so we find the transfer function
+and  just subsitute z by e^-jw and see what we get after rearenging terms to get phase response and magnetiude
+response. if we want the impulse response we make inverse z transform to the transfer functionand this is h(n)
+if we are doing fir filter we can then use a window to get h(n) just in a specified range. i also learnt bit 
+on casual filters and non casual filters (the difference equations are just of past input/future inputs)
+and stability issues, if the impulse response output is bound or not (bibo) 
+
+problem- i need to understand how this problems and theory relates to   sinc fir filters in matlab. 
+how the firws function find filter coeffients how to estimate filter order (maybe using firwsord function?)  
+and how to use the filter function of matlab with the filter coeffients that i estimated to find and plot 
+my erp simulated data after filtering with 0.1 0.3 and 0.5 highpass cutoff and see what happens.  
+
+problem-it seems that in the firws function it produce sinc function multiply by filter order 
+multiply by the window and  those are the filter coeffients? it has no relation to the input at all just 
+the filter order and cutoff and window... how all of it is connected to the theory i learnt? that h(n) is found
+by doing z tranform of the difference equation and then finding the transfer function and doing 
+inverse z transform to get h(n) which is the filter coeffients?
+
+17/5/2020 sunday 
+i watched in the begginning of the day lectures on fir filters and how to design them with python. i saw
+the window method when you start with the frequency response and then from the magnetude response you take
+the inverse fureie transform to get the impulse response. with lupital you find where the function is 0/0
+after finding the impulse response of the filter we mirror it shift it to positive terms and then using window
+function to truncate it  and you can put it in the filter function to get your modified signal
+in python. in python lfilter(impulse_response,1,input signal). what does he mean by mirroring and shifting the signal
+how does he do that? how all of it is related to filter order and cutoff frequencies... and why do we need
+to use normalize frequencies? 
+
+i need to relate all of this to matlab functions in the end of the day. finding how to estimate filter order
+with firwsord and understanding what transition width is good to use. 
+
+i also was in the meeting of lior and moran and there they spoke about their experiment. i think they have
+two conditions. in the both of them they show to the participents moving dots but in one of them they tell
+the participants also to attend to their hearts. they check hep alpha supression (how do they check alpha 
+suppression?) and hbc and maybe another thing. and use anova to check interaction effect of the alpha suppression 
+in the two conditions. what exactly are they check with anova? they also check the two groups of good hbc 
+preformers and bad hbc preformers and their preformance in the tasks of identifying when dots change direction
+compared to the hbc task. they want to check noramality of the data because they use anova and they did correlations
+of spearman between the two hbc groups and the hep i think but i am not sure. 
+
+18/5/2020 monday 
+
+df = min([max([edgeArray(1) * TRANSWIDTHRATIO 2]) maxDf]);
+edgeArray = is a sorted array of the cutoff frequncies eg.[0.5 30], edgeArray(1) is the lower number
+TRANSWIDTHRATIO = 0.25
+maxDf = min(maxTBWArray);
+maxTBWArray = edgeArray;
+so maxDf is also the lower cutoff frequncy of edgeArray
+if g.refilt = 0(
+if low_cutoff < 2 then df = low_cutoff 
+if 2<low_cutoff <8  then df = 2
+if loww_cutoff >8 then df = 0.25*low_cutoff
+
+cutoffArray = edgeArray + dfArray{g.revfilt + 1, length(edgeArray)} / 2;
+g.revfilt badndpass is 0 
+edgeArray is sorted array of cutoff frequencies
+dfArray = {df, [-df, df]; -df, [df, -df]};
+cutoffArray is not so understandable for me because i dont see yet the perpose of this code
+
+today i learnt more on filter order and transition width and i tried to understand how it is workinng
+in the functions. it seems there is inagreement between andreas presentation eeglab tutorial and the actual
+code regarding the transition width of bandpass filter with lower then 2 hertz lower cutoff, but i might 
+be wrong. i don't understand yet also the cutoffArray veriable that they give firws instead of edgeArray
+i may need to reaed andreas paper on filter design, but anyhow i can already test my filter i think on the
+simulated signal and i will try it because i can use firwsord to estimate filter order giving it the value
+i would get in the pop_filtnew.
+
+another point of confusion is that i think that in bandpass i should have 2 transition width and i have just
+one and it use just the lowcutoff which is confusing for me. i would have thought about doing two separate 
+filters one high and one low with possibly two transition widths but somehow they do one.
+
+maybe i would understand those points better after reading andreas paper
+
+19/5/2020 tuesday
+
+i read today the paper of andreas but didn't finish it yet. it explained a lot on cutoff frequencies 
+(i need to specify if its -3 or -6db) and casual and non casual filter (the output use just past inputs or
+future inputs also) he talked on the magnetude and phase response (magnetude is frquency in the abissica and 
+power or db is the ordinate while phase response is frequency in the abissica and phase in rad in the ordinate)
+he talked about the impulse response and step response ad i still need to understand fully the definitions 
+of impulse response and why the step response is important also in filters.
+
+he talked about the transition band and it seems that in our bandpass filter transition band is equal in low
+cutoff filter and high cutoff filter of the bandpass so maybe we will need to do two successive filters
+instead of one because i can utilize much shellower transition band in the lowpass this way. he talked about
+the trade off between frequency resolution and time resolution when using sharp transition bandwidth cutoff
+
+he recommended fir filter for offline perposes because it doesn't need to be fast and it can become zero 
+phase and linear. 
+
+i still need to finish the article and i can try filters on simulated data. maybe i need to find the function
+to do highpass and lowpass individually so i can use different transition widths according to the recommendation
+so i can estimate better filter orders and using them to produce filter coeffients so after that i can use it
+in the filter function to make the convolution with the impulse response of the filter. 
+
+i also still in confusion regarding how they make the bandpass filter with one transition bandwidth as andreas said
+or what is the difference from doing just high pass then this bandpass implemention since they use just 
+the highpass cutoff for doing transition width    
+
+i also thought to try to understand how the firws build the impulse response from the filter order cutoff 
+and window so i will understand better the difference between bandpass and highpass filters in regards to
+the different impulse response theey produce
+
+20/5/2020 wednesday 
+
+today i finished reading the article of andreas and couple of things goes to my mind. first of all his way 
+of testing is through the resluted erp. he check it in the frequency domain see the result of the raw data
+with the fitered data toghether and calculate differences of raw - filtered. moreover it seems he doesnt
+like the bandpass filter because the transition band is probably equal in both the highpass and lowpass
+which is not good because highpass transition band is much more steep so there are chances of much more
+distortions... (tradeoff between frequency resolution and time domain resolution). he propose to do separate
+high pass and low pass with different transition bands. also he highly reccomend to do test erp signals like
+i tried to do. low pass filterr with cutoff higher then 40 was suggested in the article.
+what kind of parameters can be estimated in eeg study? (except of onset latencies and peak amplitude?)
+
+he also said that filter must not  be applied across signal discontiniuties and i am not sure what it is because
+the data is continous i think. he also add that those discontinous segments must be reported during preprocessing?
+segments has to be processed separately is those discontinously are not reported (with bdfimport in eeglab)
+
+i still want to understand in eeglab functions how transition width translate to filter order and impulse
+response
+
+21/5/2020 thursday filters 
+
+b = fkernel(m, f(1), w);
+
+if length(f) == 1 && strcmpi(t, 'high')
+    b = fspecinv(b);
+end
+
+if length(f) == 2
+    b = b + fspecinv(fkernel(m, f(2), w));#IMPORTANT m for highpass is the same m for both cutoff frequencies
+    if isempty(t) || ~strcmpi(t, 'stop')
+        b = fspecinv(b);
+    end
+
+function b = fkernel(m, f, w)
+    m = -m / 2 : m / 2;
+    b(m == 0) = 2 * pi * f; % No division by zero
+    b(m ~= 0) = sin(2 * pi * f * m(m ~= 0)) ./ m(m ~= 0); % Sinc
+    b = b .* w; % Window
+    b = b / sum(b); % Normalization to unity gain at DC
+
+function b = fspecinv(b)
+    b = -b;
+    b(1, (length(b) - 1) / 2 + 1) = b(1, (length(b) - 1) / 2 + 1) + 1;
+f-frequency cuttoff (scalar or vector if 2 frequencies)
+m-order of the filter
+w-window function 
+t- defult to low pass/ bandpass if two frequencies and can be changed to 'high' or 'stop' for
+band stop and highpass filters 
+
+31.5.2020 
+
+in the last few days i learnt more and more on filters and tried to go in the direction of testing my pipepline.
+i thought i needed to increase automation so i succeeded in making my data automated to many datasets using
+the code of moran and lior. testing the datasets proves to be a challenge because of the dc offset of biosemi
+and the baseline drift of the ecg that making the algorithm of moran and lior to produce eronious results
+one solution to that is to filter only the ecg without the eeg but then i need to understand how and 
+eegfiltnew will not help me. so i need to understand proper cutoff and other functions to use instead. 
+i also tried to use topoplot and understood what it actually does. i used it on the external electrodes and 
+it seems to me the last 3 are maybe external electrodes that werent attached correctly but i am not sure. 
+i also need to try to use the testing pipeline with filters to be sure that it works on the 3-4 subjects i have
+from start to end. 
+
+1/6/2020 monday 
+
+i learnt today on autocorreletion which is a measure of similarity between a signal and a its legged version
+and i learnt that sharper transition width has greater filter orders and gerater filter order means bigger
+impulse response. accuracy in the frequency domain is related to sharper transition widths because i want to dump the magnetiude 
+of the signal more sharply at certain frequency range so it inversely related to accuracy in the time domain
+with a relation that is sigmat*sigmaf<= 4pi or something like that (gabor limit). andreas also said that 
+the autocorrelation of a signal is stronger in bigger lags and i dont understand why it implys more
+distortions in the time domain.
+
+i still need to understand in regards to the events. i think we need to think if events are relevant at all
+to our hypothesis. i need to understand what data we want to do correlations with. i think we want to do
+a correlation between hep in hbd task and emotional strategy choice with hypothesis that the bigger the
+hep the more interoception accuracy and according to the experiments results maybe the person choose more 
+re-apprisal on distraction strategy? we need to consider  the fact that the hbd task was maybe an hour before 
+the actual scary images so the correlation need to be smaller then hep that is closer in time to the scary images.
+so we have two main dimensions. one is what we actually did that may have influenced the hep or the correlations
+and the second is time. and both might influence correlation. in my project i check the hbd hep so my main 
+concern is maybe that i didn't have rest period in my data? anyhow my hypothesis probably should be that 
+as the time is getting farther from the actual images the correlation has to be smaller and that all in all
+greater hep should increase emotional re-apprisal choice because thats what we found in the experiment.
+regarding to what we do i actually really unsure but it might be relevant also and we need to understand how 
+the experiment proceeded.
+
+3/6/2020 wensday 
+
+today i learnt more about filters. i learnt a few videos again on the process of doing fir filter in matlab
+including checking filter specifications in the frequency response and ammending the impulse response according
+what we saw. including the mathematics of finding the impulse response from a boxcar in the magnetiude response
+i also saw a video on converting a time domain signal to frequency domain signal in preperation to comvolution
+in the frequency domain to make a filter faster. 
+i then learnt some iir filter math. and about modelling iir filters from analog lowpass filter of capacitor
+and resistor, getting the impulse and the transfer function (how?) and then sampling the transfer function to
+get the get the digital form of the analog filter transfer function and then make multiplication with the input in
+the z domain to get the output of the filter. he says that if we use the lowpass analog filter we get in 
+this case an iir filter difference  equation. then he talked about the difference between poles in the analog
+domain and digital domain and said that in the analog domain the system is stable if the poles are in the left
+half while in the digital system the system is stable if the poeles are inside the unit circle. 
