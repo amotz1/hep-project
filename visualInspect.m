@@ -1,11 +1,11 @@
 function EEG = visualInspect(EEG)
 setname = EEG.setname;
 chanlocs = EEG.chanlocs;
-disp('please reject artifacts if needed');
 string = "";
 visual_rejected = false;
 while string ~= 'Y'
     if exist('visualInspectedData','var')
+        disp('raw data for examination only');
         browseData(visualInspectedData)
 %         cfg = [];
 %         cfg.channel = {'all'};
@@ -15,6 +15,7 @@ while string ~= 'Y'
 %         cfg.layout = 'biosemi64.lay';
 %         ft_databrowser(cfg,visualInspectedData);
     else
+        disp('raw data for examination only');
         browseData(EEG);
     end
     string = input('do you want to finish trial rejection? answer with Y for yes or any other key for no','s');
@@ -31,14 +32,14 @@ while string ~= 'Y'
 %                 cfg.layout = 'biosemi64.lay';
 %                 cfg = ft_databrowser(cfg,visualInspectedData);
 %                 cfg.artfctdef.reject = 'partial';
-                visualInspectedData = browseData(cfg, visualInspectedData);
+                visualInspectedData = browseData(visualInspectedData, 'visualInspection');
                 visualInspectedData.trial = {[visualInspectedData.trial{:}]};
                 visualInspectedData.time = {[visualInspectedData.time{:}]};
                 if isfield(visualInspectedData,'sampleinfo')
                     visualInspectedData = rmfield(visualInspectedData,'sampleinfo');
                 end
         else    
-            visualInspectedData = browseData(EEG);
+            visualInspectedData = browseData(EEG,'visualInspection');
             visualInspectedData.trial = {[visualInspectedData.trial{:}]};
             visualInspectedData.time = {[visualInspectedData.time{:}]};
             if isfield(visualInspectedData,'sampleinfo')
@@ -49,6 +50,7 @@ while string ~= 'Y'
 end
 if visual_rejected 
     EEG = fieldtrip2eeglab_moran(visualInspectedData);
+    
 end
 EEG.chanlocs = chanlocs;
 EEG.setname = setname;
