@@ -1,7 +1,7 @@
 function EEG = visualInspect(EEG)
 setname = EEG.setname;
 chanlocs = EEG.chanlocs;
-disp('please reject artifacts if needed');
+disp('raw data without artifact rejection');
 string = "";
 visual_rejected = false;
 while string ~= 'Y'
@@ -38,7 +38,7 @@ while string ~= 'Y'
                     visualInspectedData = rmfield(visualInspectedData,'sampleinfo');
                 end
         else    
-            visualInspectedData = browseEegLabData(EEG);
+            visualInspectedData = browseData(EEG,'visualInspection');
             visualInspectedData.trial = {[visualInspectedData.trial{:}]};
             visualInspectedData.time = {[visualInspectedData.time{:}]};
             if isfield(visualInspectedData,'sampleinfo')
