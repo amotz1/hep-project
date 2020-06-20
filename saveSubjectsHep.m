@@ -1,4 +1,4 @@
-function testingPipeline()
+function saveSubjectsHep()
 %% loading the data and setting some constants
 subjects = [55, 43, 56]; % vector of subjects numbers 
 nCleanTrials = [];
@@ -72,14 +72,18 @@ for i=subjects
 end
 figure
 bar(subjectList,nCleanTrials);
+xlabel('subject index');
+ylabel('number of clean trials for averaging');
 figure
 bar(subjectList,nBadChannels)
+xlabel('subjects index')
+ylabel('bad channels number')
 groupMean_hepERP = nanmean(group_hepERP(:,:),2);
 for i = 1:size(subjectList,2)
  stringFormatAddition = [stringFormatAddition " %d" + " %d"]; 
 end
 stringFormatAddition = stringFormatAddition.join;
-filename = sprintf('C:\\Users\\amotz\\amotz\\for_nava\\hep_project\\hbd_variables\\testingpipeline\\groupMean_hepERP for subjects' + stringFormatAddition +".mat",subjectList);
+filename = sprintf('C:\\Users\\amotz\\amotz\\for_nava\\hep_project\\hbd_variables\\saveSubjectsHep\\groupMean_hepERP for subjects' + stringFormatAddition +".mat",subjectList);
 save(filename, 'groupMean_hepERP')
 figure
 plot(groupMean_hepERP)

@@ -17,7 +17,7 @@ switch nargin
     case 2 
         if strcmp(visualInspection,'visualInspection')   
             if isfield(data_set,'chanlocs')
-                [data, ~] = eeglab2fieldtrip_lior(data_set,'preprocessing');
+                [data_set, ~] = eeglab2fieldtrip_lior(data_set,'preprocessing');
             end
             cfg = [];
             cfg .channel = {'all'};
@@ -25,11 +25,10 @@ switch nargin
             cfg.viewmode = 'vertical';
             cfg.continuous = 'yes';
             cfg.layout = 'biosemi64.lay';
-            data.cfg = cfg;
-            disp('hi');
-            cfg = ft_databrowser(cfg, data);
+            data_set.cfg = cfg;
+            cfg = ft_databrowser(cfg, data_set);
             cfg.artfctdef.reject = 'partial';
-            cleanData = ft_rejectartifact(cfg, data);
+            cleanData = ft_rejectartifact(cfg, data_set);
         else
             error('unspecified method for browseData')
         end
