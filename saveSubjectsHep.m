@@ -19,22 +19,21 @@ for i=subjects
     % EEG = downsample512(EEG);
     ecg_69 = EEG.data(69,:);
     ecg_68 = EEG.data(68,:);
+    ecg_67 = EEG.data(67,:);
     EEG = convert2_EEGWithoutECG(EEG);
     EEG = pop_eegfiltnew(EEG,0.5,0,[],0,[]);
     EEG = pop_eegfiltnew(EEG,0,30,[],0,[]);
-    EEG = convert2_73_EEG(EEG,ecg_69,ecg_68,chanlocs,events,setname);
+    EEG = convert2_73_EEG(EEG,ecg_67,ecg_68,ecg_69, chanlocs,events,setname);
     EEG = ecgReference(EEG);
     EEG = eegReference(EEG);
     EEG = visualInspect(EEG);
     ecg = EEG.data(69,:);
     EEG = convert2_64_electrodes(EEG);
-    data = preformIca(EEG);
-    EEG = fieldtrip2eeglab_moran(data);
-    EEG.chanlocs = chanlocs(1:64);
+    EEG = preformIca(EEG,chanlocs);
     [hepMat] = hepTrialsHbd2(EEG,ecg);
     %visualize_matrix(hepMat,EEG)
     [dataChanInterpulated, interpsensvec]  = scadsAK_3dchan_reporting_failed_interpolation(hepMat, EEG.chanlocs(1:64),i);
-    [dataClean, NGoodtrials, badTrialsIndex ] = scadsAK_3dtrials(dataChanInterpulated);
+    [dataClean, NGoodtrials, badTrialsIndex] = scadsAK_3dtrials(dataChanInterpulated);
     nCleanTrials = [nCleanTrials NGoodtrials];
     if size(nBadChannels,2) < length(interpsensvec)
         nBadChannels = [nBadChannels  zeros(size(nBadChannels,1),length(interpsensvec)- size(nBadChannels,2))'];

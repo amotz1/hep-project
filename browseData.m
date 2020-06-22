@@ -1,7 +1,6 @@
 function cleanData = browseData(data_set,visualInspection)
 switch nargin
     case 1
-        disp(isfield(data_set,'chanlocs'));
         if isfield(data_set,'chanlocs')
             [data_set, ~] = eeglab2fieldtrip_lior(data_set,'preprocessing');
         end

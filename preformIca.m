@@ -1,4 +1,4 @@
-function data = preformIca(EEG)
+function EEG = preformIca(EEG,chanlocs)
 [data, ~] = eeglab2fieldtrip_lior(EEG,'preprocessing');
 cfg = [];
 cfg.channel = {'all'};
@@ -27,3 +27,5 @@ end
 componentsArray = componentsArray(1:cnt);
 cfg.component = componentsArray;
 [data] = ft_rejectcomponent(cfg, comp, data);
+ EEG = fieldtrip2eeglab_moran(data);
+ EEG.chanlocs = chanlocs(1:64);
