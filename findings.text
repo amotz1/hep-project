@@ -284,4 +284,12 @@ get the get the digital form of the analog filter transfer function and then mak
 the z domain to get the output of the filter. he says that if we use the lowpass analog filter we get in 
 this case an iir filter difference  equation. then he talked about the difference between poles in the analog
 domain and digital domain and said that in the analog domain the system is stable if the poles are in the left
-half while in the digital system the system is stable if the poeles are inside the unit circle. 
+half while in the digital system the system is stable if the poeles are inside the unit circle.]]
+
+20/7/2020 monday 
+dataset 22 big problem with finding r peaks function probably because there is artifact that simulate small sharp peaks
+also dataset 33 34 has problems with r peak detection function 
+dataset 35 ica looks remarkbly the same for many components
+39 and 35 very low number of good trials 
+ica is not working and also the peak finder some times working badly
+35 peakfinder getting nuts finding very little results

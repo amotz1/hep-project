@@ -10,6 +10,7 @@ switch nargin
         cfg.viewmode = 'vertical';
         cfg.continuous = 'yes';
         cfg.layout = 'biosemi64.lay';
+        cfg.trl = [1 size(data_set.trial{1},2) 0];
         data_set.cfg = cfg;
         cfg = ft_databrowser(cfg, data_set);
     

@@ -1,9 +1,0 @@
-function EEG = convert2_EEGWithoutECG(EEG)
-chanlocs = [EEG.chanlocs(1:66) EEG.chanlocs(70:73)];
-setname = EEG.setname;
-tempEEG = EEG;
-tempEEG.data = [EEG.data(1:66,:) ; EEG.data(70:73,:)];
-tempEEG.nbchan = 70;
-tempEEG.chanlocs = chanlocs; 
-tempEEG.setname = setname;
-EEG = tempEEG;
